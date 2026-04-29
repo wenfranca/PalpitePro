@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>◆ Palpite Pro — 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root{
+  --bg:#0c0c0e;--surface:#131316;--surface2:#1a1a1f;--border:#242428;
+  --text:#e8e8ec;--muted:#666672;
+  --mega:#00e5a0;--loto:#ff6b35;--lotof:#a78bfa;--accent:#7c6aff;--danger:#ff4d6d;
+  --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);
+  font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body{display:flex;flex-direction:column;padding:28px 28px 20px;min-height:100vh}
+
+/* HEADER */
+header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px}
+.logo-title{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;letter-spacing:-.5px}
+.logo-sub{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.hdr-right{display:flex;align-items:center;gap:16px}
+.status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s}
+.dot.loading{background:var(--accent);animation:pulse 1s infinite}
+.dot.ready{background:var(--mega)}
+.dot.error{background:var(--danger)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:4px;width:fit-content;margin-bottom:24px}
+.tab{padding:8px 20px;border-radius:7px;border:none;background:transparent;
+  color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer;transition:all .2s}
+.tab:hover{color:var(--text)}
+.tab.am{background:var(--mega);color:#0c0c0e}
+.tab.al{background:var(--loto);color:#fff}
+.tab.alf{background:var(--lotof);color:#fff}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px}
+.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.stat-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:500}
+.stat-val.mega{color:var(--mega)}.stat-val.loto{color:var(--loto)}.stat-val.lotof{color:var(--lotof)}
+
+/* GRID */
+.main{display:grid;grid-template-columns:320px 1fr;gap:16px;flex:1;min-height:0}
+
+/* PANEL */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.ph{padding:14px 18px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pb{padding:16px 18px;overflow-y:auto;flex:1}
+
+/* NUMBER GRID */
+.ngrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-bottom:16px}
+.nb{aspect-ratio:1;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);
+  color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .13s;display:flex;align-items:center;justify-content:center;
+  position:relative;user-select:none}
+.nb:hover{border-color:var(--text);color:var(--text);transform:scale(1.08)}
+.nb.sm{background:var(--mega);border-color:var(--mega);color:#0c0c0e;font-weight:600;
+  box-shadow:0 0 10px rgba(0,229,160,.3)}
+.nb.sl{background:var(--loto);border-color:var(--loto);color:#fff;font-weight:600;
+  box-shadow:0 0 10px rgba(255,107,53,.3)}
+.nb.slf{background:var(--lotof);border-color:var(--lotof);color:#fff;font-weight:600;
+  box-shadow:0 0 10px rgba(167,139,250,.3)}
+.nb.hot::after{content:'';position:absolute;top:2px;right:2px;width:4px;height:4px;
+  border-radius:50%;background:var(--mega)}
+.nb.hotl::after{content:'';position:absolute;top:2px;right:2px;width:4px;height:4px;
+  border-radius:50%;background:var(--loto)}
+.nb.hotf::after{content:'';position:absolute;top:2px;right:2px;width:4px;height:4px;
+  border-radius:50%;background:var(--lotof)}
+
+/* BUTTONS */
+.arow{display:flex;gap:7px}
+.btn{flex:1;padding:10px;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:600;cursor:pointer;transition:all .18s}
+.bm{background:var(--mega);color:#0c0c0e}.bm:hover{filter:brightness(1.1)}
+.bl{background:var(--loto);color:#fff}.bl:hover{filter:brightness(1.1)}
+.bf{background:var(--lotof);color:#fff}.bf:hover{filter:brightness(1.1)}
+.bg{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+.bg:hover{border-color:var(--text);color:var(--text)}
+
+/* RIGHT */
+.rpanel{display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+
+/* SUGGESTIONS */
+.sitem{display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  transition:border-color .2s;margin-bottom:8px}
+.sitem:hover{border-color:var(--accent)}
+.srank{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);width:18px;text-align:center;flex-shrink:0}
+.snums{display:flex;gap:5px;flex-wrap:wrap;flex:1}
+.ball{width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;flex-shrink:0}
+.bm2{background:rgba(0,229,160,.12);border:1.5px solid rgba(0,229,160,.3);color:var(--mega)}
+.bm2.hl{background:rgba(0,229,160,.28);border-color:var(--mega)}
+.bl2{background:rgba(255,107,53,.12);border:1.5px solid rgba(255,107,53,.3);color:var(--loto)}
+.bl2.hl{background:rgba(255,107,53,.28);border-color:var(--loto)}
+.bf2{background:rgba(167,139,250,.12);border:1.5px solid rgba(167,139,250,.3);color:var(--lotof)}
+.bf2.hl{background:rgba(167,139,250,.28);border-color:var(--lotof)}
+.smeta{text-align:right;flex-shrink:0}
+.sscore{font-family:'DM Mono',monospace;font-size:14px;font-weight:500}
+.sscore.mega{color:var(--mega)}.sscore.loto{color:var(--loto)}.sscore.lotof{color:var(--lotof)}
+.slbl{font-size:9px;color:var(--muted);letter-spacing:.5px}
+
+/* FREQ */
+.flist{display:flex;flex-direction:column;gap:7px}
+.fitem{display:flex;align-items:center;gap:9px}
+.fnum{font-family:'DM Mono',monospace;font-size:11px;width:24px;text-align:center;color:var(--muted);flex-shrink:0}
+.fwrap{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.fbar{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.fbar.mega{background:var(--mega)}.fbar.loto{background:var(--loto)}.fbar.lotof{background:var(--lotof)}
+.fcnt{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);width:30px;text-align:right}
+
+/* HISTORY TABLE */
+.htable{width:100%;border-collapse:collapse;font-size:11px}
+.htable th{text-align:left;padding:6px 10px;color:var(--muted);font-size:10px;
+  text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);font-weight:500}
+.htable td{padding:8px 10px;border-bottom:1px solid rgba(36,36,40,.6);vertical-align:middle}
+.htable tr:hover td{background:var(--surface2)}
+.dz{display:flex;gap:4px;flex-wrap:wrap}
+.dball{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:9px;font-weight:500}
+.dball.mega{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.25);color:var(--mega)}
+.dball.loto{background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.25);color:var(--loto)}
+.dball.lotof{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);color:var(--lotof)}
+.acum-yes{color:var(--loto);font-size:10px;font-weight:600}
+.acum-no{color:var(--muted);font-size:10px}
+
+/* LOADING SCREEN */
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px}
+#loadScreen.hide{display:none}
+.lspinner{width:38px;height:38px;border:2px solid var(--border);border-top-color:var(--mega);
+  border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ltitle{font-family:'DM Mono',monospace;font-size:16px;font-weight:500}
+.lprog{font-size:12px;color:var(--muted);text-align:center;line-height:1.8;max-width:90%}
+.lbar-wrap{width:260px;max-width:80%;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.lbar{height:100%;background:var(--mega);border-radius:2px;width:0;transition:width .3s}
+.lerr{color:var(--danger);font-size:11px;text-align:center;max-width:380px;line-height:1.6}
+.lretry{margin-top:6px;background:transparent;border:1px solid var(--border);color:var(--text);
+  padding:7px 16px;border-radius:7px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer}
+.lretry:hover{border-color:var(--text)}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;padding:40px 20px;color:var(--muted);text-align:center}
+.ei{font-size:28px;opacity:.35}
+.et{font-size:13px;font-weight:500;color:var(--text)}
+.es{font-size:11px;line-height:1.7}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);
+  border:1px solid var(--border);padding:10px 16px;border-radius:9px;font-size:12px;
+  transform:translateY(60px);opacity:0;transition:all .25s;pointer-events:none;z-index:300}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* TABS pages */
+.page{display:none}.page.active{display:flex;flex-direction:column;flex:1;min-height:0}
+.vtabs{display:flex;gap:2px;margin-bottom:14px}
+.vtab{padding:6px 14px;border-radius:6px;border:none;background:transparent;
+  color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;
+  font-family:'DM Sans',sans-serif}
+.vtab:hover{color:var(--text)}
+.vtab.va{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+
+.save-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);
+  font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 14px;border-radius:7px;
+  cursor:pointer;transition:all .2s}
+.save-btn:hover{border-color:var(--text);color:var(--text)}
+
+/* Cache info */
+.cache-info{font-size:10px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace}
+
+@media (max-width: 880px) {
+  body { padding: 16px }
+  .stats-row { grid-template-columns: repeat(2, 1fr) }
+  .main { grid-template-columns: 1fr }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loadScreen">
+  <div class="lspinner" id="lspin"></div>
+  <div class="ltitle">◆ Palpite Pro</div>
+  <div class="lbar-wrap"><div class="lbar" id="lbar"></div></div>
+  <div class="lprog" id="lprog">Conectando à API da Caixa...</div>
+  <div class="lerr" id="lerr" style="display:none"></div>
+  <button class="lretry" id="lretry" style="display:none" onclick="iniciarCarregamento()">Tentar novamente</button>
+  <div style="position:absolute;bottom:24px;font-size:9px;color:var(--muted);
+    letter-spacing:1.5px;text-transform:uppercase;font-family:'DM Mono',monospace">
+    Desenvolvido por Wendell França
+  </div>
+</div>
+
+<!-- MAIN APP (hidden until loaded) -->
+<div id="app" style="display:none;flex-direction:column;flex:1;min-height:0">
+
+<header>
+  <div>
+    <div class="logo-title">◆ Palpite Pro</div>
+    <div class="logo-sub">Análise de concordância · 2026</div>
+  </div>
+  <div class="hdr-right">
+    <button class="save-btn" onclick="recarregar()" title="Recarregar dados da API">↻ Atualizar</button>
+    <div class="status">
+      <div class="dot ready" id="statusDot"></div>
+      <span id="statusTxt">Pronto</span>
+    </div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab am" id="tMega" onclick="switchLot('megasena')">Mega Sena</button>
+  <button class="tab"   id="tLoto" onclick="switchLot('lotomania')">Lotomania</button>
+  <button class="tab"   id="tLotof" onclick="switchLot('lotofacil')">Lotofácil</button>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-lbl">Sorteios 2026</div><div class="stat-val mega" id="sSorteios">—</div></div>
+  <div class="stat"><div class="stat-lbl">Números únicos</div><div class="stat-val" id="sNumeros">—</div></div>
+  <div class="stat"><div class="stat-lbl">Mais frequente</div><div class="stat-val mega" id="sHot">—</div></div>
+  <div class="stat"><div class="stat-lbl">Selecionados</div><div class="stat-val" id="sSel">0</div></div>
+</div>
+
+<div class="main" style="flex:1;min-height:0">
+  <!-- LEFT -->
+  <div style="display:flex;flex-direction:column;gap:14px;overflow-y:auto">
+
+    <div class="panel">
+      <div class="ph">
+        <span>Selecionar Números</span>
+        <span id="selCount" style="font-family:'DM Mono',monospace;font-size:10px">0 / 6</span>
+      </div>
+      <div class="pb">
+        <div id="ngrid" class="ngrid"></div>
+        <div class="arow">
+          <button class="btn bm" id="btnAn" onclick="analyze()">Analisar</button>
+          <button class="btn bg" onclick="clearSel()">Limpar</button>
+          <button class="btn bg" onclick="randPick()">Aleatório</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph">Top 10 mais sorteados</div>
+      <div class="pb"><div class="flist" id="freqList"><div style="color:var(--muted);font-size:11px">—</div></div></div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div style="display:flex;flex-direction:column;gap:0;min-height:0">
+    <div class="vtabs">
+      <button class="vtab va" onclick="showView('vSug',this)">Sugestões</button>
+      <button class="vtab"    onclick="showView('vHist',this)">Histórico</button>
+    </div>
+
+    <!-- Sugestões -->
+    <div id="vSug" class="panel" style="flex:1;min-height:0">
+      <div class="ph"><span>Sugestões por Concordância</span></div>
+      <div class="pb" id="suggestions">
+        <div class="empty">
+          <div class="ei">◎</div>
+          <div class="et">Pronto para analisar</div>
+          <div class="es">Clique em <b>Analisar</b> para receber sugestões<br>baseadas nos sorteios mais frequentes,<br>ou selecione números fixos antes para personalizar.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Histórico -->
+    <div id="vHist" class="panel" style="flex:1;min-height:0;display:none">
+      <div class="ph">
+        <span>Todos os Sorteios 2026</span>
+        <span id="histCount" style="font-family:'DM Mono',monospace;font-size:10px"></span>
+      </div>
+      <div class="pb" style="padding:0">
+        <table class="htable">
+          <thead><tr>
+            <th>#</th><th>Data</th><th>Dezenas</th><th>Acum.</th>
+          </tr></thead>
+          <tbody id="histBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);
+  text-align:center;font-size:10px;color:var(--muted);letter-spacing:1.2px;
+  text-transform:uppercase;font-family:'DM Mono',monospace">
+  Desenvolvido por Wendell França
+</footer>
+
+</div><!-- #app -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════════════════════════════
+const BASE_URL    = 'https://servicebus2.caixa.gov.br/portaldeloterias/api';
+const MAX_WORKERS = 6;      // requisições paralelas — baixo p/ não saturar a API da Caixa
+const MAX_RETRIES = 5;      // mais retries — a API descarta requisições sob carga
+const ANO_ALVO    = 2026;
+const CACHE_KEY   = 'palpite_pro_cache_v1';
+const CACHE_TTL   = 6 * 60 * 60 * 1000;  // 6 horas
+
+// ════════════════════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════════════════════
+const S = {
+  lot: 'megasena',
+  data: { megasena: [], lotomania: [], lotofacil: [] },
+  sel: new Set(),
+  stats: {}
+};
+
+const CFG = {
+  megasena:  { max: 60,  pick: 6,  drawn: 6,  label: 'Mega Sena',  ac: 'mega',  tac: 'am'  },
+  lotomania: { max: 100, pick: 50, drawn: 20, label: 'Lotomania',  ac: 'loto',  tac: 'al'  },
+  lotofacil: { max: 25,  pick: 15, drawn: 15, label: 'Lotofácil',  ac: 'lotof', tac: 'alf' }
+};
+
+const prog = { megasena: 0, lotomania: 0, lotofacil: 0 };
+
+// ════════════════════════════════════════════════════════════════════════════
+//  API CAIXA — fetch com retry
+// ════════════════════════════════════════════════════════════════════════════
+async function buscarComRetry(url) {
+  for (let t = 1; t <= MAX_RETRIES; t++) {
+    try {
+      const resp = await fetch(url, {
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
+      });
+      if (resp.status === 404) return null;             // concurso não existe — definitivo
+      if (resp.status === 429 || resp.status >= 500) {  // rate-limit / erro servidor — espera mais
+        throw new Error('HTTP ' + resp.status + ' (transitório)');
+      }
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return await resp.json();
+    } catch (e) {
+      if (t === MAX_RETRIES) return null;
+      // backoff exponencial com jitter: 400ms, 800ms, 1.6s, 3.2s...
+      const wait = 400 * Math.pow(2, t - 1) + Math.random() * 200;
+      await new Promise(r => setTimeout(r, wait));
+    }
+  }
+  return null;
+}
+
+async function buscarConcurso(loteria, numero) {
+  const url = `${BASE_URL}/${loteria}/${numero}`;
+  return [numero, await buscarComRetry(url)];
+}
+
+function extrairAno(dataStr) {
+  if (!dataStr || typeof dataStr !== 'string') return null;
+  const m = dataStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return m ? parseInt(m[3], 10) : null;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+//  Descobrir range do ano-alvo via busca binária (mesma lógica do Python)
+// ────────────────────────────────────────────────────────────────────────────
+async function descobrirRangeAnoAlvo(loteria) {
+  const data = await buscarComRetry(`${BASE_URL}/${loteria}/`);
+  if (!data) return [0, 0];
+
+  const ultimo     = data.numero || 0;
+  const anoUltimo  = extrairAno(data.dataApuracao || '');
+  if (anoUltimo && anoUltimo < ANO_ALVO) return [0, 0];
+
+  // Busca binária — primeiro do ano-alvo
+  let baixo = Math.max(1, ultimo - 250), alto = ultimo;
+  while (baixo < alto) {
+    const meio = Math.floor((baixo + alto) / 2);
+    const [, d] = await buscarConcurso(loteria, meio);
+    if (d === null) { baixo = meio + 1; continue; }
+    const ano = extrairAno(d.dataApuracao || '');
+    if (ano === null || ano < ANO_ALVO) baixo = meio + 1;
+    else alto = meio;
+  }
+
+  let primeiroAlvo = baixo;
+  // Pode ser que o concurso `baixo` ainda seja de ano anterior (404 sequenciais),
+  // então avança até encontrar um do ano-alvo (limite de 10 saltos).
+  for (let k = 0; k < 10; k++) {
+    const [, d] = await buscarConcurso(loteria, primeiroAlvo);
+    if (d && extrairAno(d.dataApuracao || '') === ANO_ALVO) break;
+    primeiroAlvo += 1;
+  }
+
+  let ultimoAlvo;
+  if (anoUltimo === ANO_ALVO) {
+    ultimoAlvo = ultimo;
+  } else {
+    let baixo2 = primeiroAlvo, alto2 = ultimo;
+    while (baixo2 < alto2) {
+      const meio = Math.floor((baixo2 + alto2 + 1) / 2);
+      const [, d] = await buscarConcurso(loteria, meio);
+      if (d === null) { alto2 = meio - 1; continue; }
+      const ano = extrairAno(d.dataApuracao || '');
+      if (ano === ANO_ALVO) baixo2 = meio;
+      else alto2 = meio - 1;
+    }
+    ultimoAlvo = baixo2;
+  }
+
+  return [primeiroAlvo, ultimoAlvo];
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+//  Pool de workers — busca em paralelo (substitui ThreadPoolExecutor)
+// ────────────────────────────────────────────────────────────────────────────
+async function buscarSorteiosParalelo(loteria, progressCb) {
+  const [primeiro, ultimo] = await descobrirRangeAnoAlvo(loteria);
+  if (primeiro === 0) return [];
+
+  const numeros = [];
+  for (let i = primeiro; i <= ultimo; i++) numeros.push(i);
+  const total = numeros.length;
+  const resultados = {};
+  let concluidos = 0;
+  let idx = 0;
+
+  async function worker() {
+    while (idx < numeros.length) {
+      const n = numeros[idx++];
+      const [num, d] = await buscarConcurso(loteria, n);
+      concluidos++;
+      if (d) resultados[num] = d;
+      if (progressCb) progressCb(loteria, concluidos, total);
+    }
+  }
+
+  const workers = [];
+  for (let i = 0; i < Math.min(MAX_WORKERS, total); i++) workers.push(worker());
+  await Promise.all(workers);
+
+  // ─── VALIDAÇÃO: rebusca sequencial dos faltantes ─────────────────────────
+  // Se algum número do range não voltou (provavelmente por rate-limit/timeout),
+  // tenta de novo um por um, com pausas, antes de desistir.
+  const faltantes = numeros.filter(n => !(n in resultados));
+  if (faltantes.length > 0) {
+    if (progressCb) progressCb(loteria, concluidos, total + faltantes.length);
+    for (const n of faltantes) {
+      await new Promise(r => setTimeout(r, 150));   // pausa entre tentativas
+      const [num, d] = await buscarConcurso(loteria, n);
+      if (d) resultados[num] = d;
+      concluidos++;
+      if (progressCb) progressCb(loteria, concluidos, total + faltantes.length);
+    }
+  }
+
+  // ─── EXTENSÃO PARA FRENTE: se o range descoberto está desatualizado ──────
+  // Tenta os próximos 5 números após `ultimo` — se algum existe e é do ano-alvo,
+  // expande o range. Útil quando a página foi aberta logo após um sorteio novo.
+  for (let n = ultimo + 1; n <= ultimo + 5; n++) {
+    const [, d] = await buscarConcurso(loteria, n);
+    if (d === null) break;
+    const ano = extrairAno(d.dataApuracao || '');
+    if (ano === ANO_ALVO) resultados[n] = d;
+    else break;   // saiu do ano-alvo
+  }
+
+  const sorteios = [];
+  Object.keys(resultados).map(Number).sort((a, b) => a - b).forEach(n => {
+    const d = resultados[n];
+    const dataStr = d.dataApuracao || '';
+    if (extrairAno(dataStr) !== ANO_ALVO) return;
+    const dezenas = d.dezenasSorteadasOrdemSorteio || d.listaDezenas || [];
+    const ganhadores = d.listaRateioPremio || [];
+    const f1 = ganhadores.find(r => r.faixa === 1);
+    sorteios.push({
+      numero: d.numero,
+      data: dataStr,
+      dezenas: dezenas,
+      acumulado: d.acumulado || false,
+      valor_estimado_proximo: d.valorAcumuladoProximoConcurso || 0,
+      ganhadores_faixa1: f1 ? (f1.numeroDeGanhadores || 0) : 0
+    });
+  });
+  return sorteios;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  CACHE (localStorage)
+// ════════════════════════════════════════════════════════════════════════════
+function lerCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj.timestamp || (Date.now() - obj.timestamp) > CACHE_TTL) return null;
+    return obj.dados;
+  } catch { return null; }
+}
+
+function gravarCache(dados) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      timestamp: Date.now(),
+      dados: dados
+    }));
+  } catch (e) { console.warn('Falha ao gravar cache:', e); }
+}
+
+function limparCache() {
+  try { localStorage.removeItem(CACHE_KEY); } catch {}
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  CARREGAMENTO
+// ════════════════════════════════════════════════════════════════════════════
+async function iniciarCarregamento(forceReload = false) {
+  document.getElementById('lerr').style.display = 'none';
+  document.getElementById('lretry').style.display = 'none';
+  document.getElementById('lspin').style.display = 'block';
+  document.getElementById('lbar').style.width = '0%';
+  document.getElementById('lprog').textContent = 'Conectando à API da Caixa...';
+
+  // 1) tenta cache primeiro
+  if (!forceReload) {
+    const c = lerCache();
+    if (c && c.megasena && c.lotomania && c.lotofacil) {
+      document.getElementById('lprog').textContent = 'Carregando do cache local...';
+      document.getElementById('lbar').style.width = '100%';
+      S.data.megasena  = c.megasena;
+      S.data.lotomania = c.lotomania;
+      S.data.lotofacil = c.lotofacil;
+      computeStats();
+      setTimeout(initApp, 200);
+      return;
+    }
+  }
+
+  // 2) busca da API
+  try {
+    const loterias = ['megasena', 'lotomania', 'lotofacil'];
+    const labels   = { megasena: 'Mega Sena', lotomania: 'Lotomania', lotofacil: 'Lotofácil' };
+
+    for (const lot of loterias) {
+      const cb = (loteria, atual, total) => {
+        const pct = total ? atual / total : 0;
+        prog[loteria] = pct;
+        const totalPct = (prog.megasena + prog.lotomania + prog.lotofacil) / 3;
+        document.getElementById('lbar').style.width = (totalPct * 100).toFixed(0) + '%';
+        document.getElementById('lprog').textContent =
+          `${labels[loteria]}: ${atual} / ${total} concursos`;
+      };
+      const sorteios = await buscarSorteiosParalelo(lot, cb);
+      S.data[lot] = sorteios;
+      prog[lot] = 1;
+      const totalPct = (prog.megasena + prog.lotomania + prog.lotofacil) / 3;
+      document.getElementById('lbar').style.width = (totalPct * 100).toFixed(0) + '%';
+    }
+
+    // grava cache
+    gravarCache({
+      megasena:  S.data.megasena,
+      lotomania: S.data.lotomania,
+      lotofacil: S.data.lotofacil
+    });
+
+    computeStats();
+    initApp();
+  } catch (e) {
+    console.error(e);
+    mostrarErro('Falha ao carregar dados da Caixa.\nVerifique sua conexão e CORS do navegador.\n\nDetalhe: ' + e.message);
+  }
+}
+
+function mostrarErro(msg) {
+  document.getElementById('lspin').style.display = 'none';
+  document.getElementById('lprog').textContent = '';
+  const errEl = document.getElementById('lerr');
+  errEl.textContent = msg;
+  errEl.style.display = 'block';
+  document.getElementById('lretry').style.display = 'inline-block';
+}
+
+function recarregar() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loadScreen').classList.remove('hide');
+  prog.megasena = prog.lotomania = prog.lotofacil = 0;
+  S.sel.clear();
+  limparCache();
+  iniciarCarregamento(true);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  STATS
+// ════════════════════════════════════════════════════════════════════════════
+function computeStats() {
+  ['megasena','lotomania','lotofacil'].forEach(lot => {
+    const freq = {}, cooc = {};
+    S.data[lot].forEach(s => {
+      const nums = s.dezenas.map(Number);
+      nums.forEach(n => { freq[n] = (freq[n]||0) + 1; });
+      for (let i = 0; i < nums.length; i++)
+        for (let j = i+1; j < nums.length; j++) {
+          const k = `${Math.min(nums[i],nums[j])}-${Math.max(nums[i],nums[j])}`;
+          cooc[k] = (cooc[k]||0) + 1;
+        }
+    });
+    S.stats[lot] = { freq, cooc };
+  });
+}
+
+function freq()  { return (S.stats[S.lot]||{}).freq || {}; }
+function cooc()  { return (S.stats[S.lot]||{}).cooc || {}; }
+function topN(n) {
+  return Object.entries(freq()).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([k])=>Number(k));
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════════════════════
+function initApp() {
+  document.getElementById('loadScreen').classList.add('hide');
+  document.getElementById('app').style.display = 'flex';
+  updateStats();
+  renderGrid();
+  renderFreq();
+  renderHist();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  SWITCH LOTERIA
+// ════════════════════════════════════════════════════════════════════════════
+function switchLot(lot) {
+  S.lot = lot; S.sel.clear();
+  const cfg = CFG[lot];
+  document.getElementById('tMega').className  = 'tab' + (lot==='megasena'  ? ' am'  : '');
+  document.getElementById('tLoto').className  = 'tab' + (lot==='lotomania' ? ' al'  : '');
+  document.getElementById('tLotof').className = 'tab' + (lot==='lotofacil' ? ' alf' : '');
+  document.getElementById('btnAn').className = `btn b${cfg.ac === 'lotof' ? 'f' : cfg.ac[0]}`;
+  document.getElementById('sSorteios').className = `stat-val ${cfg.ac}`;
+  document.getElementById('sHot').className = `stat-val ${cfg.ac}`;
+  updateStats(); renderGrid(); renderFreq(); renderHist(); resetResults();
+}
+
+function updateStats() {
+  const f = freq(), lot = S.lot;
+  const sorted = Object.entries(f).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('sSorteios').textContent = S.data[lot].length || '—';
+  document.getElementById('sNumeros').textContent  = Object.keys(f).length || '—';
+  document.getElementById('sHot').textContent      = sorted.length ? pad(sorted[0][0]) : '—';
+  document.getElementById('sSel').textContent      = S.sel.size;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  NUMBER GRID
+// ════════════════════════════════════════════════════════════════════════════
+function renderGrid() {
+  const cfg = CFG[S.lot], hot = new Set(topN(10));
+  const hotClass = S.lot==='lotomania' ? ' hotl' : S.lot==='lotofacil' ? ' hotf' : ' hot';
+  const selClass = S.lot==='megasena' ? 'sm' : S.lot==='lotomania' ? 'sl' : 'slf';
+  const g = document.getElementById('ngrid');
+  g.innerHTML = '';
+  for (let i = 1; i <= cfg.max; i++) {
+    const b = document.createElement('button');
+    b.className = 'nb' + (hot.has(i) ? hotClass : '');
+    b.textContent = pad(i);
+    b.dataset.n = i;
+    if (S.sel.has(i)) b.classList.add(selClass);
+    b.onclick = () => toggleN(i);
+    g.appendChild(b);
+  }
+  document.getElementById('selCount').textContent = `${S.sel.size} / ${cfg.pick}`;
+}
+
+function toggleN(n) {
+  const cfg = CFG[S.lot];
+  if (S.sel.has(n)) { S.sel.delete(n); }
+  else {
+    if (S.sel.size >= cfg.pick) { toast(`Máx ${cfg.pick} para ${cfg.label}`); return; }
+    S.sel.add(n);
+  }
+  const b = document.querySelector(`.nb[data-n="${n}"]`);
+  if (b) {
+    b.classList.toggle('sm',  S.sel.has(n) && S.lot==='megasena');
+    b.classList.toggle('sl',  S.sel.has(n) && S.lot==='lotomania');
+    b.classList.toggle('slf', S.sel.has(n) && S.lot==='lotofacil');
+  }
+  document.getElementById('selCount').textContent = `${S.sel.size} / ${cfg.pick}`;
+  document.getElementById('sSel').textContent = S.sel.size;
+}
+
+function clearSel()  { S.sel.clear(); renderGrid(); resetResults(); updateStats(); }
+function randPick()  {
+  S.sel.clear();
+  const cfg = CFG[S.lot];
+  while (S.sel.size < cfg.drawn) S.sel.add(Math.floor(Math.random()*cfg.max)+1);
+  renderGrid(); updateStats();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  FREQ
+// ════════════════════════════════════════════════════════════════════════════
+function renderFreq() {
+  const top = Object.entries(freq()).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const max = top[0] ? top[0][1] : 1, lot = S.lot;
+  const barClass = lot==='lotomania' ? 'loto' : lot==='lotofacil' ? 'lotof' : 'mega';
+  const el = document.getElementById('freqList');
+  if (!top.length) { el.innerHTML = '<div style="color:var(--muted);font-size:11px">Sem dados</div>'; return; }
+  el.innerHTML = top.map(([n,c]) => `
+    <div class="fitem">
+      <span class="fnum">${pad(n)}</span>
+      <div class="fwrap"><div class="fbar ${barClass}" style="width:${(c/max*100).toFixed(1)}%"></div></div>
+      <span class="fcnt">${c}×</span>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  HISTORY
+// ════════════════════════════════════════════════════════════════════════════
+function renderHist() {
+  const lot = S.lot, sorteios = S.data[lot];
+  document.getElementById('histCount').textContent = `${sorteios.length} sorteios`;
+  const tbody = document.getElementById('histBody');
+  if (!sorteios.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);padding:20px;text-align:center">Sem dados</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...sorteios].reverse().map(s => `
+    <tr>
+      <td style="font-family:'DM Mono',monospace;color:var(--muted);font-size:10px">${s.numero}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:10px;white-space:nowrap">${s.data}</td>
+      <td><div class="dz">${s.dezenas.map(d=>`<div class="dball ${lot}">${pad(d)}</div>`).join('')}</div></td>
+      <td>${s.acumulado ? '<span class="acum-yes">SIM</span>' : '<span class="acum-no">—</span>'}</td>
+    </tr>`).join('');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  ANALYZE
+// ════════════════════════════════════════════════════════════════════════════
+function analyze() {
+  const lot = S.lot, cfg = CFG[lot];
+  const sorteios = S.data[lot], co = cooc(), fr = freq();
+
+  if (!sorteios.length) {
+    toast('Sem dados carregados ainda');
+    return;
+  }
+
+  const sel = [...S.sel];
+  const pickSize = cfg.drawn;
+  const ac = cfg.ac;
+  const ballCls = ac==='lotof' ? 'f2' : ac==='loto' ? 'l2' : 'm2';
+
+  let sugs = [];
+  let modo = '';
+
+  // ─── MODO 1: SEM SELEÇÃO — sugestões puras por estatística ──────────────
+  if (sel.length === 0) {
+    modo = 'estatística pura';
+
+    // Ordena todos os números por frequência (mais sorteados primeiro)
+    const ranking = [];
+    for (let n = 1; n <= cfg.max; n++) {
+      ranking.push({ n, freq: fr[n] || 0 });
+    }
+    ranking.sort((a, b) => b.freq - a.freq);
+
+    const topFreq = ranking.slice(0, Math.min(cfg.max, pickSize * 3)).map(r => r.n);
+    const maxFreq = ranking[0].freq || 1;
+
+    // Gera 5 sugestões variando o "núcleo" inicial
+    for (let i = 0; i < 5; i++) {
+      const game = [];
+      const pool = [...topFreq];
+
+      if (i === 0) {
+        // Primeira sugestão: estritamente os mais frequentes
+        for (const n of pool) { if (game.length >= pickSize) break; game.push(n); }
+      } else {
+        // Demais: 60% dos mais frequentes + 40% sorteados aleatoriamente do top
+        const fixos = Math.floor(pickSize * 0.6);
+        for (let k = 0; k < fixos && k < pool.length; k++) game.push(pool[k]);
+        // embaralha o restante do pool e completa
+        const restante = pool.slice(fixos);
+        for (let j = restante.length - 1; j > 0; j--) {
+          const k = Math.floor(Math.random() * (j + 1));
+          [restante[j], restante[k]] = [restante[k], restante[j]];
+        }
+        for (const n of restante) { if (game.length >= pickSize) break; if (!game.includes(n)) game.push(n); }
+      }
+
+      // Calcula "score" com base na frequência média dos escolhidos vs maxFreq
+      const avgFreq = game.reduce((a, n) => a + (fr[n] || 0), 0) / game.length;
+      const score = Math.min(99, Math.round((avgFreq / maxFreq) * 100));
+
+      sugs.push({
+        game: game.slice(0, pickSize).sort((a, b) => a - b),
+        concord: score,
+        label: 'frequência'
+      });
+    }
+  }
+
+  // ─── MODO 2: COM SELEÇÃO — concordância com fixos ────────────────────────
+  else {
+    modo = `${sel.length} fixo(s)`;
+
+    const scores = {};
+    for (let n = 1; n <= cfg.max; n++) {
+      if (S.sel.has(n)) continue;
+      let score = 0;
+      sel.forEach(s => { score += co[`${Math.min(s,n)}-${Math.max(s,n)}`] || 0; });
+      scores[n] = { score, freq: fr[n]||0 };
+    }
+
+    const cands = Object.entries(scores).filter(([,v])=>v.score>0)
+      .sort((a,b)=>b[1].score-a[1].score);
+
+    if (!cands.length) {
+      document.getElementById('suggestions').innerHTML = `
+        <div class="empty"><div class="ei">◌</div>
+          <div class="et">Sem concordância</div>
+          <div class="es">Esses números nunca apareceram juntos<br>nos sorteios de ${ANO_ALVO}.</div>
+        </div>`; return;
+    }
+
+    const topNums = cands.slice(0,40).map(([n])=>Number(n));
+    const byFreq  = Object.entries(fr).sort((a,b)=>b[1]-a[1]).map(([n])=>Number(n));
+    const maxScore = cands[0][1].score;
+
+    for (let i = 0; i < 5; i++) {
+      const game = [...sel];
+      const pool = [...topNums];
+      if (i > 0) for (let j=pool.length-1;j>0;j--) {
+        const k = Math.floor(Math.random()*Math.min(j+1,6));
+        [pool[j],pool[k]]=[pool[k],pool[j]];
+      }
+      for (const n of pool) { if (game.length>=pickSize) break; if (!game.includes(n)) game.push(n); }
+      for (const n of byFreq) { if (game.length>=pickSize) break; if (!game.includes(n)) game.push(n); }
+      const sc = game.reduce((a,n)=>a+(S.sel.has(n)?0:(scores[n]?.score||0)),0);
+      sugs.push({
+        game: game.slice(0,pickSize).sort((a,b)=>a-b),
+        concord: Math.min(99,Math.round(sc/maxScore*100)),
+        label: 'concordância'
+      });
+    }
+  }
+
+  // ─── RENDER ──────────────────────────────────────────────────────────────
+  document.getElementById('suggestions').innerHTML = `
+    <div style="font-size:10px;color:var(--muted);margin-bottom:12px;letter-spacing:.3px">
+      Baseado em ${sorteios.length} sorteios · ${modo}
+    </div>
+    ${sugs.map((s,i)=>`
+    <div class="sitem">
+      <span class="srank">#${i+1}</span>
+      <div class="snums">
+        ${s.game.map(n=>`<div class="ball b${ballCls}${S.sel.has(n)?' hl':''}">${pad(n)}</div>`).join('')}
+      </div>
+      <div class="smeta">
+        <div class="sscore ${ac}">${s.concord}%</div>
+        <div class="slbl">${s.label}</div>
+      </div>
+    </div>`).join('')}`;
+}
+
+function resetResults() {
+  document.getElementById('suggestions').innerHTML = `
+    <div class="empty"><div class="ei">◎</div>
+      <div class="et">Pronto para analisar</div>
+      <div class="es">Clique em <b>Analisar</b> para receber sugestões<br>baseadas nos sorteios mais frequentes,<br>ou selecione números fixos antes para personalizar.</div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  VIEW TOGGLE
+// ════════════════════════════════════════════════════════════════════════════
+function showView(id, btn) {
+  ['vSug','vHist'].forEach(v => {
+    const el = document.getElementById(v);
+    el.style.display = v===id ? 'flex' : 'none';
+  });
+  document.querySelectorAll('.vtab').forEach(b => b.classList.remove('va'));
+  btn.classList.add('va');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════════════════════════
+function pad(n) { return String(n).padStart(2,'0'); }
+
+let _tt;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(_tt); _tt = setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  iniciarCarregamento();
+});
+</script>
+</body>
+</html>
